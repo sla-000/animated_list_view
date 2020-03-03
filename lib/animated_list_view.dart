@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
+void _log(String message) {
+  debugPrint('AnimatedListView/$message');
+}
+
 class AnimatedListView extends StatefulWidget {
   const AnimatedListView({
     Key key,
@@ -62,6 +66,10 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     super.initState();
 
     _currentChildren = widget.children;
+    _log('initState: _currentChildren=$_currentChildren');
+
+    _animatedChildren =
+        _currentChildren.map((Widget child) => _buildAnimated(child)).toList();
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
   }
@@ -85,6 +93,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   @override
   void didUpdateWidget(AnimatedListView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _log('didUpdateWidget: was=${oldWidget.children}, new=${widget.children}');
 
     final List<Key> _lastChildrenKeys =
         oldWidget.children.map((Widget child) => child.key).toList();
@@ -108,6 +117,9 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       }
     });
 
+    _log('didUpdateWidget: _keysToAdd=$_keysToAdd');
+    _log('didUpdateWidget: _keysToRemove=$_keysToRemove');
+
     final List<Widget> merged = mergeChanges<Widget>(
       oldWidget.children,
       widget.children,
@@ -116,6 +128,8 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     _currentChildren.clear();
     _currentChildren.addAll(merged);
+
+    _log('didUpdateWidget: _currentChildren=$_currentChildren');
 
     _animatedChildren =
         merged.map((Widget child) => _buildAnimated(child)).toList();
