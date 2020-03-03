@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: AnimatedListView(
                 scrollDirection: Axis.horizontal,
                 children: _horizontalWidgets,
-                duration: Duration(milliseconds: 1500),
+                duration: const Duration(milliseconds: 1500),
               ),
             ),
           ),

@@ -1,4 +1,5 @@
-bool _isEqualDefault(a, b) => a.runtimeType == b.runtimeType && a == b;
+bool _isEqualDefault(dynamic a, dynamic b) =>
+    a.runtimeType == b.runtimeType && a == b;
 
 List<T> mergeChanges<T>(
   List<T> list1,

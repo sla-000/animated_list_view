@@ -7,8 +7,8 @@ import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
 class AnimatedListView extends StatefulWidget {
-  AnimatedListView({
-    this.key,
+  const AnimatedListView({
+    Key key,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -26,9 +26,8 @@ class AnimatedListView extends StatefulWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.customAnimation,
     this.duration,
-  });
+  }) : super(key: key);
 
-  final Key key;
   final Axis scrollDirection;
   final bool reverse;
   final ScrollController controller;
@@ -52,14 +51,17 @@ class AnimatedListView extends StatefulWidget {
 }
 
 class _AnimatedListViewState extends State<AnimatedListView> {
-  final _previousChildren = <Widget>[];
-  final _toRemove = <Key>[];
-  final _toAdd = <Key>[];
+  List<Widget> _currentChildren;
+  final List<Key> _keysToRemove = <Key>[];
+  final List<Key> _keysToAdd = <Key>[];
   CustomAnimation _customAnimation;
+  List<Widget> _animatedChildren = <Widget>[];
 
   @override
   void initState() {
     super.initState();
+
+    _currentChildren = widget.children;
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
   }
@@ -69,7 +71,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     @required Animation<double> animation,
     @required bool appearing,
   }) {
-    final _curvedAnimation = appearing
+    final CurvedAnimation _curvedAnimation = appearing
         ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
         : CurvedAnimation(parent: animation, curve: Curves.easeInCubic.flipped);
 
@@ -81,41 +83,46 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    List<Key> _lastChildrenKeys =
-        _previousChildren.map((child) => child.key).toList();
+  void didUpdateWidget(AnimatedListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    List<Key> _currentChildrenKeys =
-        widget.children.map((child) => child.key).toList();
+    final List<Key> _lastChildrenKeys =
+        oldWidget.children.map((Widget child) => child.key).toList();
 
-    _currentChildrenKeys.forEach((key) {
+    final List<Key> _currentChildrenKeys =
+        widget.children.map((Widget child) => child.key).toList();
+
+    _currentChildrenKeys.forEach((Key key) {
       if (!_lastChildrenKeys.contains(key)) {
-        if (!_toAdd.contains(key)) {
-          _toAdd.add(key);
+        if (!_keysToAdd.contains(key)) {
+          _keysToAdd.add(key);
         }
       }
     });
 
-    _lastChildrenKeys.forEach((key) {
+    _lastChildrenKeys.forEach((Key key) {
       if (!_currentChildrenKeys.contains(key)) {
-        if (!_toRemove.contains(key)) {
-          _toRemove.add(key);
+        if (!_keysToRemove.contains(key)) {
+          _keysToRemove.add(key);
         }
       }
     });
 
-    final merged = mergeChanges<Widget>(
-      _previousChildren,
+    final List<Widget> merged = mergeChanges<Widget>(
+      oldWidget.children,
       widget.children,
-      isEqual: (a, b) => a.key == b.key,
+      isEqual: (Widget a, Widget b) => a.key == b.key,
     );
 
-    _previousChildren.clear();
-    _previousChildren.addAll(merged);
+    _currentChildren.clear();
+    _currentChildren.addAll(merged);
 
-    final wrappedChildren =
-        merged.map((child) => _buildAnimated(child)).toList();
+    _animatedChildren =
+        merged.map((Widget child) => _buildAnimated(child)).toList();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       key: widget.key,
       scrollDirection: widget.scrollDirection,
@@ -130,15 +137,15 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       addRepaintBoundaries: widget.addRepaintBoundaries,
       addSemanticIndexes: widget.addSemanticIndexes,
       cacheExtent: widget.cacheExtent,
-      children: wrappedChildren,
+      children: _animatedChildren,
       semanticChildCount: widget.semanticChildCount,
       dragStartBehavior: widget.dragStartBehavior,
     );
   }
 
   Widget _buildAnimated(Widget child) {
-    final mustDelete = _toRemove.contains(child.key);
-    final mustAdd = _toAdd.contains(child.key);
+    final bool mustDelete = _keysToRemove.contains(child.key);
+    final bool mustAdd = _keysToAdd.contains(child.key);
 
     if (mustDelete) {
       return ShowAnimated(
@@ -147,8 +154,8 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         duration: widget.duration,
         appearing: false,
         onAnimationComplete: () {
-          _previousChildren.remove(child);
-          _toRemove.remove(child.key);
+          _currentChildren.remove(child);
+          _keysToRemove.remove(child.key);
           setState(() {});
         },
         child: child,
@@ -160,7 +167,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         duration: widget.duration,
         appearing: true,
         onAnimationComplete: () {
-          _toAdd.remove(child.key);
+          _keysToAdd.remove(child.key);
           setState(() {});
         },
         child: child,

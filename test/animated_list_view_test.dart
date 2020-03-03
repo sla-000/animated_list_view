@@ -73,8 +73,9 @@ void main() {
       final y = ["17", "18", "3", "5", "7", "8", "10", "13", "14", "15", "11"];
 
       expect(
-          mergeChanges(x, y,
-              isEqual: (x, y) => x.runtimeType == y.runtimeType && x == y),
+          mergeChanges<String>(x, y,
+              isEqual: (String x, String y) =>
+                  x.runtimeType == y.runtimeType && x == y),
           [
             "17", "18", "3", "4", "5", "6", "7", "8", "9", "10", "13", "14", //
             "15", "11", "12"
