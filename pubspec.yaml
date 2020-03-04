@@ -6,7 +6,8 @@ author: sla000 <ryabinin.v.v@gmail.com>
 homepage: https://github.com/sla-000/animated_list_view
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ^1.12.13
 
 dependencies:
   flutter:
