@@ -67,7 +67,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
 
-    _log('didUpdateWidget: was=${widget.children.map((Widget widget) {
+    _log('initState: children=${widget.children.map((Widget widget) {
       return widget.key;
     }).toList(growable: false)}');
 
@@ -109,10 +109,10 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     final List<Key> _lastChildrenKeys =
         _currentChildren.map((Widget child) => child.key).toList();
 
-    final List<Key> _currentChildrenKeys =
+    final List<Key> _newChildrenKeys =
         widget.children.map((Widget child) => child.key).toList();
 
-    _currentChildrenKeys.forEach((Key key) {
+    _newChildrenKeys.forEach((Key key) {
       if (!_lastChildrenKeys.contains(key)) {
         if (!_keysToAdd.contains(key)) {
           _keysToAdd.add(key);
@@ -121,7 +121,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     });
 
     _lastChildrenKeys.forEach((Key key) {
-      if (!_currentChildrenKeys.contains(key)) {
+      if (!_newChildrenKeys.contains(key)) {
         if (!_keysToRemove.contains(key)) {
           _keysToRemove.add(key);
         }
@@ -137,11 +137,16 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     }
 
     _currentChildren = mergeChanges<Widget>(
-      oldWidget.children,
+      _currentChildren,
       widget.children,
       isEqual: (Widget a, Widget b) => a.key == b.key,
     );
     _animatedChildren = _warpToAnimation(_currentChildren);
+
+    _log(
+        'didUpdateWidget: New _currentChildren=${_currentChildren.map((Widget widget) {
+      return widget.key;
+    }).toList(growable: false)}');
   }
 
   @override
@@ -179,6 +184,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         onAnimationComplete: () {
           _currentChildren.remove(child);
           _keysToRemove.remove(child.key);
+          _log('_buildAnimated: Removed child=${child.key}');
           setState(() {});
         },
         child: child,
