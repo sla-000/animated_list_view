@@ -1,6 +1,6 @@
-import 'dart:math';
-
 import 'package:animated_list_view/animated_list_view.dart';
+import 'package:example/item.dart';
+import 'package:example/one_item_widget.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final _horizontalWidgets = _horizontalItems
-        .map((item) => OneItem(
+        .map((item) => OneItemWidget(
               key: ValueKey(item.number),
               number: item.number,
               color: item.color,
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
 
     final _verticalWidgets = _verticalItems
-        .map((item) => OneItem(
+        .map((item) => OneItemWidget(
               key: ValueKey(item.number),
               number: item.number,
               color: item.color,
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-            height: 100,
+            height: 200,
             child: Scrollbar(
               child: AnimatedListView(
                 scrollDirection: Axis.horizontal,
@@ -177,100 +177,4 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
-}
-
-class OneItem extends StatelessWidget {
-  OneItem({
-    Key key,
-    @required this.number,
-    @required this.color,
-    @required this.onAddBefore,
-    @required this.onAddAfter,
-    @required this.onDelete,
-    this.vertical = true,
-  }) : super(key: key);
-
-  final int number;
-  final Color color;
-  final bool vertical;
-
-  final void Function() onAddBefore;
-  final void Function() onAddAfter;
-  final void Function() onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: vertical ? double.infinity : 120,
-      height: vertical ? 100 : double.infinity,
-      color: color,
-      child: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.center,
-            child: Text("Tile #$number"),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: IconButton(
-              icon: Icon(Icons.plus_one),
-              onPressed: onAddBefore,
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: onDelete,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-              icon: Icon(Icons.plus_one),
-              onPressed: onAddAfter,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: onDelete,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Item {
-  Item(this.number) : this.color = _getRandomColor();
-
-  final int number;
-  final Color color;
-
-  static Color _getRandomColor() {
-    return Color.fromARGB(
-      0xFF,
-      _getRandomInt(),
-      _getRandomInt(),
-      _getRandomInt(),
-    );
-  }
-
-  static int _getRandomInt() {
-    const delta = 200;
-    return Random.secure().nextInt(delta) + 255 - delta;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Item &&
-          runtimeType == other.runtimeType &&
-          number == other.number;
-
-  @override
-  int get hashCode => number.hashCode;
 }

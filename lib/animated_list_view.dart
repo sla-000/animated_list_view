@@ -67,6 +67,10 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
 
+    _log('didUpdateWidget: was=${widget.children.map((Widget widget) {
+      return widget.key;
+    }).toList(growable: false)}');
+
     _currentChildren = widget.children;
     _animatedChildren = _warpToAnimation(_currentChildren);
   }
@@ -94,11 +98,16 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   @override
   void didUpdateWidget(AnimatedListView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _log(
-        'didUpdateWidget: was=${oldWidget.children.map((Widget widget) => widget.key).toList(growable: false)}, new=${widget.children.map((Widget widget) => widget.key).toList(growable: false)}');
+    _log('didUpdateWidget: '
+        'was=${_currentChildren.map((Widget widget) {
+      return widget.key;
+    }).toList(growable: false)}, '
+        'new=${widget.children.map((Widget widget) {
+      return widget.key;
+    }).toList(growable: false)}');
 
     final List<Key> _lastChildrenKeys =
-        oldWidget.children.map((Widget child) => child.key).toList();
+        _currentChildren.map((Widget child) => child.key).toList();
 
     final List<Key> _currentChildrenKeys =
         widget.children.map((Widget child) => child.key).toList();
