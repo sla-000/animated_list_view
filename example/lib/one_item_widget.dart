@@ -29,7 +29,7 @@ class OneItemWidget extends StatelessWidget {
         children: <Widget>[
           Align(
             alignment: Alignment.center,
-            child: Text("Tile #$number"),
+            child: Text('Tile #$number'),
           ),
           Align(
             alignment: Alignment.topLeft,
