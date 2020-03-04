@@ -146,6 +146,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
 
+    if (itemIndex == -1) {
+      return;
+    }
+
     lst.insert(
       itemIndex,
       Item(next),
@@ -158,6 +162,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final next = _getNextNumber();
 
     final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
+
+    if (itemIndex == -1) {
+      return;
+    }
 
     lst.insert(
       itemIndex + 1,
