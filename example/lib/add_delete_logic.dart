@@ -2,7 +2,7 @@ import 'package:example/item.dart';
 
 class AddDeleteLogic {
   AddDeleteLogic({
-    this.tilesCounter = 0,
+    this.tilesCounter = 10,
   });
 
   int tilesCounter;

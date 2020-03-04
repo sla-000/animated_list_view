@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:example/horizontal_list.dart';
+import 'package:example/item.dart';
 import 'package:example/vertical_list.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +20,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key key}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<Item> _verticalItems;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _verticalItems = _getRandomItems();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +43,69 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Test AnimatedListView'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
+      body: Stack(
         children: <Widget>[
-          Container(
-            height: 250,
-            child: const Scrollbar(
-              child: HorizontalAnimatedListWidget(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                height: 250,
+                child: const Scrollbar(
+                  child: HorizontalAnimatedListWidget(),
+                ),
+              ),
+              Container(
+                height: 8,
+                color: Theme.of(context).dividerColor,
+              ),
+              Expanded(
+                child: Scrollbar(
+                  child: VerticalAnimatedListWidget(items: _verticalItems),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 55,
+            left: 20,
+            child: FloatingActionButton(
+              child: const Icon(Icons.refresh),
+              onPressed: () {},
             ),
           ),
-          Container(
-            height: 8,
-            color: Theme.of(context).dividerColor,
-          ),
-          const Expanded(
-            child: Scrollbar(
-              child: VerticalAnimatedListWidget(),
+          Positioned(
+            bottom: 20,
+            right: 55,
+            child: FloatingActionButton(
+              child: const Icon(Icons.refresh),
+              onPressed: () {
+                _verticalItems = _getRandomItems();
+                setState(() {});
+              },
             ),
           ),
         ],
       ),
     );
+  }
+
+  List<Item> _getRandomItems() {
+    final List<Item> rez = <Item>[];
+
+    final List<int> availableNumbers = <int>[];
+    for (int q = 0; q < 10; ++q) {
+      availableNumbers.add(q);
+    }
+
+    for (int index = 0; index < 10; ++index) {
+      final int index = Random.secure().nextInt(availableNumbers.length);
+      final int val = availableNumbers[index];
+      availableNumbers.remove(val);
+
+      rez.add(Item(val));
+    }
+
+    return rez;
   }
 }
