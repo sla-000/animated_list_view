@@ -11,7 +11,7 @@ typedef CustomAnimation = Widget Function({
 });
 
 class ShowAnimated extends StatefulWidget {
-  ShowAnimated({
+  const ShowAnimated({
     Key key,
     @required this.child,
     this.onAnimationComplete,
@@ -39,14 +39,18 @@ class _ShowAnimatedState extends State<ShowAnimated>
   @override
   void initState() {
     super.initState();
+    _log('initState: key=${widget.child.key}');
 
     _animationController =
         AnimationController(vsync: this, duration: widget._duration);
 
-    _animation = Tween(begin: 0.0, end: 1.0).animate(_animationController);
+    _animation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
 
     _animationController.addListener(() {
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     _startAnimation();
@@ -55,7 +59,6 @@ class _ShowAnimatedState extends State<ShowAnimated>
   @override
   void didUpdateWidget(ShowAnimated oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     _log(
         'didUpdateWidget: key=${widget.child.key}, appearing=${widget.appearing}');
 

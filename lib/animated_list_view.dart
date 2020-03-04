@@ -184,6 +184,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         onAnimationComplete: () {
           _currentChildren.remove(child);
           _keysToRemove.remove(child.key);
+          _animatedChildren = _warpToAnimation(_currentChildren);
           _log('_buildAnimated: Removed child=${child.key}');
           setState(() {});
         },
@@ -197,6 +198,8 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         appearing: true,
         onAnimationComplete: () {
           _keysToAdd.remove(child.key);
+          _animatedChildren = _warpToAnimation(_currentChildren);
+          _log('_buildAnimated: Added child=${child.key}');
           setState(() {});
         },
         child: child,
