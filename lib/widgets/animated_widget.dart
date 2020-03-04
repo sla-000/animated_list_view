@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+void _log(String message) {
+  debugPrint('ShowAnimated/$message');
+}
+
 typedef CustomAnimation = Widget Function({
   @required Widget child,
   @required Animation<double> animation,
@@ -45,6 +49,20 @@ class _ShowAnimatedState extends State<ShowAnimated>
       if (mounted) setState(() {});
     });
 
+    _startAnimation();
+  }
+
+  @override
+  void didUpdateWidget(ShowAnimated oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _log(
+        'didUpdateWidget: key=${widget.child.key}, appearing=${widget.appearing}');
+
+    _startAnimation();
+  }
+
+  void _startAnimation() {
     if (widget.appearing) {
       _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
         widget.onAnimationComplete?.call();
