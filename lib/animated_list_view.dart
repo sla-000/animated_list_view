@@ -65,14 +65,15 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   void initState() {
     super.initState();
 
-    _currentChildren = widget.children;
-    _log('initState: _currentChildren=$_currentChildren');
-
-    _animatedChildren =
-        _currentChildren.map((Widget child) => _buildAnimated(child)).toList();
-
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
+
+    _currentChildren = widget.children;
+    _animatedChildren = _warpToAnimation(_currentChildren);
   }
+
+  List<Widget> _warpToAnimation(List<Widget> children) => children
+      .map((Widget child) => _buildAnimated(child))
+      .toList(growable: false);
 
   Widget _defaultAnimation({
     @required Widget child,
@@ -93,7 +94,8 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   @override
   void didUpdateWidget(AnimatedListView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _log('didUpdateWidget: was=${oldWidget.children}, new=${widget.children}');
+    _log(
+        'didUpdateWidget: was=${oldWidget.children.map((Widget widget) => widget.key).toList(growable: false)}, new=${widget.children.map((Widget widget) => widget.key).toList(growable: false)}');
 
     final List<Key> _lastChildrenKeys =
         oldWidget.children.map((Widget child) => child.key).toList();
@@ -117,22 +119,20 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       }
     });
 
-    _log('didUpdateWidget: _keysToAdd=$_keysToAdd');
-    _log('didUpdateWidget: _keysToRemove=$_keysToRemove');
+    if (_keysToAdd.isNotEmpty) {
+      _log('didUpdateWidget: _keysToAdd=$_keysToAdd');
+    }
 
-    final List<Widget> merged = mergeChanges<Widget>(
+    if (_keysToRemove.isNotEmpty) {
+      _log('didUpdateWidget: _keysToRemove=$_keysToRemove');
+    }
+
+    _currentChildren = mergeChanges<Widget>(
       oldWidget.children,
       widget.children,
       isEqual: (Widget a, Widget b) => a.key == b.key,
     );
-
-    _currentChildren.clear();
-    _currentChildren.addAll(merged);
-
-    _log('didUpdateWidget: _currentChildren=$_currentChildren');
-
-    _animatedChildren =
-        merged.map((Widget child) => _buildAnimated(child)).toList();
+    _animatedChildren = _warpToAnimation(_currentChildren);
   }
 
   @override
