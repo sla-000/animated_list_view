@@ -15,10 +15,23 @@ List<T> mergeChanges<T>(
 
   isEqual ??= (T a, T b) => (a.runtimeType == b.runtimeType) && (a == b);
 
+  findDelta(list1, list2, isEqual, toRemove);
+
+  findDelta(list2, list1, isEqual, toAdd);
+
   final List<T> rez = <T>[];
 
-  rez.addAll(list1);
+  rez.addAll(list2);
 
+  return rez;
+}
+
+void findDelta<T>(
+  List<T> list1,
+  List<T> list2,
+  bool isEqual(T x1, T x2),
+  List<T> toRemove,
+) {
   for (int q = 0; q < list1.length; ++q) {
     final T valInList1 = list1[q];
 
@@ -27,15 +40,4 @@ List<T> mergeChanges<T>(
       toRemove.add(valInList1);
     }
   }
-
-  for (int q = 0; q < list2.length; ++q) {
-    final T valInList2 = list2[q];
-
-    if (list1.indexWhere((T valInList1) => isEqual(valInList1, valInList2)) ==
-        kIndexNotFound) {
-      toAdd.add(valInList2);
-    }
-  }
-
-  return rez;
 }
