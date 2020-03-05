@@ -37,35 +37,18 @@ List<T> mergeChanges<T>(
 
   final List<T> rez = List<T>.of(listNew);
 
-  final List<T> toRemoveLeft = <T>[];
+  int indexLastNotRemovingItem = kIndexNotFound;
+  bool collectingListOfRemovingItems = true;
+  List<T> collectionOfRemovingItems = <T>[];
 
-  for (int q = 0; q < toRemove.length; ++q) {
-    final T valFromListOldRemovingInListNew = toRemove[q];
-
-    final int indexValFromListOldToAddToListNew = listOld.indexWhere(
-        (T valInListOld) =>
-            isEqual(valInListOld, valFromListOldRemovingInListNew));
-
-    if (indexValFromListOldToAddToListNew == 0) {
-      rez.insert(0, valFromListOldRemovingInListNew);
-      continue;
-    } else if (indexValFromListOldToAddToListNew == (listOld.length - 1)) {
-      rez.add(valFromListOldRemovingInListNew);
-      continue;
-    } else {
-      toRemoveLeft.add(valFromListOldRemovingInListNew);
-    }
-  }
-
-  int indexLastNotRemovingItem = 0;
-  bool collectingListOfRemovingItems = false;
-  List<T> collectionOfRemovingItems;
+  _log('listOld=$listOld');
+  _log('toRemove=$toRemove');
 
   for (int q = 0; q < listOld.length; ++q) {
     _log('q=$q');
     final T valListOld = listOld[q];
 
-    if (toRemoveLeft.contains(valListOld)) {
+    if (toRemove.contains(valListOld)) {
       if (collectingListOfRemovingItems == false) {
         collectingListOfRemovingItems = true;
 
@@ -74,6 +57,7 @@ List<T> mergeChanges<T>(
       }
 
       collectionOfRemovingItems.add(valListOld);
+      _log('collectionOfRemovingItems add=$valListOld');
     } else {
       indexLastNotRemovingItem = q;
       _log('indexLastNotRemovingItem=$q');
@@ -81,15 +65,26 @@ List<T> mergeChanges<T>(
       if (collectingListOfRemovingItems == true) {
         collectingListOfRemovingItems = false;
 
-        final int insertIndex =
-            min(rez.length - 1, indexLastNotRemovingItem + 1);
+        int insertIndex;
+
+        if (indexLastNotRemovingItem == kIndexNotFound) {
+          insertIndex = 0;
+        } else {
+          insertIndex = min(rez.length - 1, indexLastNotRemovingItem + 1);
+        }
 
         rez.insertAll(insertIndex, collectionOfRemovingItems);
         _log('insert collectionOfRemovingItems=$collectionOfRemovingItems');
         _log('insert rez=$rez');
+
+        collectionOfRemovingItems = <T>[];
       }
     }
   }
+
+  rez.addAll(collectionOfRemovingItems);
+  _log('addAll collectionOfRemovingItems=$collectionOfRemovingItems');
+  _log('insert rez=$rez');
 
   return rez;
 }
