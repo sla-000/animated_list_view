@@ -1,5 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
+void _log(String message) {
+  debugPrint('merge/$message');
+}
+
 const int kIndexNotFound = -1;
 
 List<T> mergeChanges<T>(
@@ -51,14 +57,37 @@ List<T> mergeChanges<T>(
     }
   }
 
-  int stayedValueIndex = 0;
+  int indexLastNotRemovingItem = 0;
+  bool collectingListOfRemovingItems = false;
+  List<T> collectionOfRemovingItems;
 
   for (int q = 0; q < listOld.length; ++q) {
+    _log('q=$q');
     final T valListOld = listOld[q];
 
     if (toRemoveLeft.contains(valListOld)) {
+      if (collectingListOfRemovingItems == false) {
+        collectingListOfRemovingItems = true;
+
+        collectionOfRemovingItems = <T>[];
+        _log('init collectionOfRemovingItems');
+      }
+
+      collectionOfRemovingItems.add(valListOld);
     } else {
-      stayedValueIndex = q;
+      indexLastNotRemovingItem = q;
+      _log('indexLastNotRemovingItem=$q');
+
+      if (collectingListOfRemovingItems == true) {
+        collectingListOfRemovingItems = false;
+
+        final int insertIndex =
+            min(rez.length - 1, indexLastNotRemovingItem + 1);
+
+        rez.insertAll(insertIndex, collectionOfRemovingItems);
+        _log('insert collectionOfRemovingItems=$collectionOfRemovingItems');
+        _log('insert rez=$rez');
+      }
     }
   }
 

@@ -544,7 +544,7 @@ void main() {
 
         final List<int> rez = mergeChanges(x, y);
 
-        expect(rez, <int>[1, 2, 9, 10, 3, 4, 5, 6, 11, 12, 7, 8]);
+        expect(rez, <int>[1, 2, 9, 10, 3, 4, 5, 6, 7, 11, 12, 8]);
       });
     });
   });
