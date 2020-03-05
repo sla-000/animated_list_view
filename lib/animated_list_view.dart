@@ -136,9 +136,14 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       _log('didUpdateWidget: _keysToRemove=$_keysToRemove');
     }
 
+    final List<Widget> _widgetsToRemove = <Widget>[];
+    final List<Widget> _widgetsToAdd = <Widget>[];
+
     _currentChildren = mergeChanges<Widget>(
       _currentChildren,
       widget.children,
+      toRemove: _widgetsToRemove,
+      toAdd: _widgetsToAdd,
       isEqual: (Widget a, Widget b) => a.key == b.key,
     );
     _animatedChildren = _warpToAnimation(_currentChildren);

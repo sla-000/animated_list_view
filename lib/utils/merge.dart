@@ -1,53 +1,40 @@
-bool _isEqualDefault(dynamic a, dynamic b) =>
-    a.runtimeType == b.runtimeType && a == b;
+const int kIndexNotFound = -1;
 
 List<T> mergeChanges<T>(
   List<T> list1,
   List<T> list2, {
-  bool Function(T x1, T x2) isEqual = _isEqualDefault,
+  List<T> toAdd,
+  List<T> toRemove,
+  bool Function(T x1, T x2) isEqual,
 }) {
   assert(list1 != null);
   assert(list2 != null);
 
-  final rez = <T>[];
+  toAdd ??= <T>[];
+  toRemove ??= <T>[];
 
-  var index1 = 0;
-  var index2 = 0;
+  isEqual ??= (T a, T b) => (a.runtimeType == b.runtimeType) && (a == b);
 
-  while (index1 < list1.length && index2 < list2.length) {
-    if (isEqual(list2[index2], list1[index1])) {
-      rez.add(list1[index1]);
-      ++index1;
-      ++index2;
-    } else {
-      final find2in1index =
-          list1.indexWhere((value) => isEqual(value, list2[index2]));
+  final List<T> rez = <T>[];
 
-      final find1in2index =
-          list2.indexWhere((value) => isEqual(value, list1[index1]));
+  rez.addAll(list1);
 
-      if (find2in1index != -1 && find1in2index == -1) {
-        rez.addAll(list1.sublist(index1, find2in1index));
-        index1 = find2in1index;
-      } else if (find2in1index == -1 && find1in2index != -1) {
-        rez.addAll(list2.sublist(index2, find1in2index));
-        index2 = find1in2index;
-      } else if (find2in1index != -1 && find1in2index != -1) {
-        ++index1;
-        ++index2;
-      } else {
-        rez.add(list1[index1++]);
-        rez.add(list2[index2++]);
-      }
+  for (int q = 0; q < list1.length; ++q) {
+    final T valInList1 = list1[q];
+
+    if (list2.indexWhere((T valInList2) => isEqual(valInList2, valInList1)) ==
+        kIndexNotFound) {
+      toRemove.add(valInList1);
     }
   }
 
-  if (index1 < list1.length) {
-    rez.addAll(list1.sublist(index1));
-  }
+  for (int q = 0; q < list2.length; ++q) {
+    final T valInList2 = list2[q];
 
-  if (index2 < list2.length) {
-    rez.addAll(list2.sublist(index2));
+    if (list1.indexWhere((T valInList1) => isEqual(valInList1, valInList2)) ==
+        kIndexNotFound) {
+      toAdd.add(valInList2);
+    }
   }
 
   return rez;

@@ -98,7 +98,12 @@ class _MyHomePageState extends State<MyHomePage> {
       availableNumbers.add(q);
     }
 
-    for (int index = 0; index < 10; ++index) {
+    const int kMaxItems = 10;
+    const int kMinItems = 3;
+    final int itemsNumber =
+        Random.secure().nextInt(kMaxItems - kMinItems) + kMinItems;
+
+    for (int index = 0; index < itemsNumber; ++index) {
       final int index = Random.secure().nextInt(availableNumbers.length);
       final int val = availableNumbers[index];
       availableNumbers.remove(val);
