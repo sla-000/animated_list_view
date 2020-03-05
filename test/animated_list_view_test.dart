@@ -3,6 +3,82 @@ import 'package:flutter_test/flutter_test.dart';
 import '../lib/utils/merge.dart';
 
 void main() {
+  group('Test standalone zip', () {
+    test('test1', () {
+      final List<int> x = <int>[1, 2, 3];
+      final List<int> y = <int>[];
+
+      x.zip(y);
+
+      expect(x.zip(y), <int>[1, 2, 3]);
+    });
+
+    test('test2', () {
+      final List<int> x = <int>[];
+      final List<int> y = <int>[1, 2, 3];
+
+      x.zip(y);
+
+      expect(x.zip(y), <int>[1, 2, 3]);
+    });
+
+    test('test3', () {
+      final List<int> x = <int>[1, 2, 3];
+      final List<int> y = <int>[10];
+
+      x.zip(y);
+
+      expect(x.zip(y), <int>[1, 10, 2, 3]);
+    });
+
+    test('test4', () {
+      final List<int> x = <int>[10];
+      final List<int> y = <int>[1, 2, 3];
+
+      x.zip(y);
+
+      expect(x.zip(y), <int>[10, 1, 2, 3]);
+    });
+
+    test('test5', () {
+      final List<int> x = <int>[1, 2, 3, 4, 5];
+      final List<int> y = <int>[10, 11, 12, 13, 14];
+
+      x.zip(y);
+
+      expect(x.zip(y), <int>[1, 10, 2, 11, 3, 12, 4, 13, 5, 14]);
+    });
+  });
+
+  group('Test merge when all old values removed', () {
+    test('test1', () {
+      final List<int> x = <int>[1, 2, 3, 4, 5];
+      final List<int> y = <int>[10, 11, 12, 13, 14];
+
+      final List<int> rez = mergeChanges(x, y);
+
+      expect(rez, <int>[1, 10, 2, 11, 3, 12, 4, 13, 5, 14]);
+    });
+
+    test('test2', () {
+      final List<int> x = <int>[1, 2, 3, 4, 5];
+      final List<int> y = <int>[10, 11, 12, 13, 14, 15];
+
+      final List<int> rez = mergeChanges(x, y);
+
+      expect(rez, <int>[10, 1, 11, 2, 12, 3, 13, 4, 14, 5, 15]);
+    });
+
+    test('test3', () {
+      final List<int> x = <int>[1, 2, 3, 4, 5, 6];
+      final List<int> y = <int>[10, 11, 12, 13, 14];
+
+      final List<int> rez = mergeChanges(x, y);
+
+      expect(rez, <int>[1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6]);
+    });
+  });
+
   group('Test toAdd and toRemove only', () {
     List<int> toAdd;
     List<int> toRemove;
@@ -367,7 +443,7 @@ void main() {
       });
     });
 
-    group('Test mergeChanges function remove', () {
+    group('Test mergeChanges function remove simple', () {
       test('test1', () {
         final List<int> x = <int>[1, 2];
         final List<int> y = <int>[1];
@@ -387,6 +463,35 @@ void main() {
       });
 
       test('test3', () {
+        final List<int> x = <int>[1, 2, 3, 4];
+        final List<int> y = <int>[2, 3, 4];
+
+        final List<int> rez = mergeChanges(x, y);
+
+        expect(rez, <int>[1, 2, 3, 4]);
+      });
+
+      test('test4', () {
+        final List<int> x = <int>[1, 2, 3, 4];
+        final List<int> y = <int>[1, 2, 3];
+
+        final List<int> rez = mergeChanges(x, y);
+
+        expect(rez, <int>[1, 2, 3, 4]);
+      });
+
+      test('test5', () {
+        final List<int> x = <int>[1, 2, 3, 4, 5, 6];
+        final List<int> y = <int>[2, 3, 4, 5];
+
+        final List<int> rez = mergeChanges(x, y);
+
+        expect(rez, <int>[1, 2, 3, 4, 5, 6]);
+      });
+    });
+
+    group('Test mergeChanges function remove complicated', () {
+      test('test1', () {
         final List<int> x = <int>[1, 2, 3];
         final List<int> y = <int>[1, 3];
 
@@ -395,7 +500,7 @@ void main() {
         expect(rez, <int>[1, 2, 3]);
       });
 
-      test('test4', () {
+      test('test2', () {
         final List<int> x = <int>[1, 2, 3, 4];
         final List<int> y = <int>[2, 4];
 
@@ -404,7 +509,7 @@ void main() {
         expect(rez, <int>[1, 2, 3, 4]);
       });
 
-      test('test5', () {
+      test('test3', () {
         final List<int> x = <int>[1, 2, 3, 4, 5];
         final List<int> y = <int>[4, 5];
 
@@ -413,7 +518,7 @@ void main() {
         expect(rez, <int>[1, 2, 3, 4, 5]);
       });
 
-      test('test6', () {
+      test('test4', () {
         final List<int> x = <int>[1, 2, 3, 4, 5];
         final List<int> y = <int>[1, 2];
 
@@ -422,7 +527,7 @@ void main() {
         expect(rez, <int>[1, 2, 3, 4, 5]);
       });
 
-      test('test7', () {
+      test('test5', () {
         final List<int> x = <int>[1, 2, 3, 4, 5];
         final List<int> y = <int>[2, 4];
 
