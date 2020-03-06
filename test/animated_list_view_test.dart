@@ -555,6 +555,15 @@ void main() {
 
         expect(rez, <int>[3, 8, 5, 4, 2, 9]);
       });
+
+      test('test-t4g3f2bt4r3', () {
+        final List<int> x = <int>[1, 4, 0, 7, 3, 8, 6, 2, 9, 5];
+        final List<int> y = <int>[4, 7, 0, 5];
+
+        final List<int> rez = mergeChanges(x, y);
+
+        expect(rez, <int>[1, 4, 7, 0, 3, 8, 6, 2, 9, 5]);
+      });
     });
   });
 }

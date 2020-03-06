@@ -7,7 +7,7 @@ import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
 void _log(String Function() buildMessage) {
-//  debugPrint('AnimatedListView/${buildMessage()}');
+  debugPrint('AnimatedListView/${buildMessage()}');
 }
 
 class AnimatedListView extends StatefulWidget {
@@ -106,36 +106,6 @@ class _AnimatedListViewState extends State<AnimatedListView> {
           return widget.key;
         }).toList(growable: false)}');
 
-    final List<Key> _lastChildrenKeys =
-        _currentChildren.map((Widget child) => child.key).toList();
-
-    final List<Key> _newChildrenKeys =
-        widget.children.map((Widget child) => child.key).toList();
-
-    _newChildrenKeys.forEach((Key key) {
-      if (!_lastChildrenKeys.contains(key)) {
-        if (!_keysToAdd.contains(key)) {
-          _keysToAdd.add(key);
-        }
-      }
-    });
-
-    _lastChildrenKeys.forEach((Key key) {
-      if (!_newChildrenKeys.contains(key)) {
-        if (!_keysToRemove.contains(key)) {
-          _keysToRemove.add(key);
-        }
-      }
-    });
-
-    if (_keysToAdd.isNotEmpty) {
-      _log(() => 'didUpdateWidget: _keysToAdd=$_keysToAdd');
-    }
-
-    if (_keysToRemove.isNotEmpty) {
-      _log(() => 'didUpdateWidget: _keysToRemove=$_keysToRemove');
-    }
-
     final List<Widget> _widgetsToRemove = <Widget>[];
     final List<Widget> _widgetsToAdd = <Widget>[];
 
@@ -147,6 +117,22 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       isEqual: (Widget a, Widget b) => a.key == b.key,
     );
     _animatedChildren = _warpToAnimation(_currentChildren);
+
+    for (int q = 0; q < _widgetsToRemove.length; ++q) {
+      final Key key = _widgetsToRemove[q].key;
+
+      if (!_keysToRemove.contains(key)) {
+        _keysToRemove.add(key);
+      }
+    }
+
+    for (int q = 0; q < _widgetsToAdd.length; ++q) {
+      final Key key = _widgetsToAdd[q].key;
+
+      if (!_keysToAdd.contains(key)) {
+        _keysToAdd.add(key);
+      }
+    }
 
     _log(() =>
         'didUpdateWidget: New _currentChildren=${_currentChildren.map((Widget widget) {

@@ -9,6 +9,9 @@ void _log(String Function() buildMessage) {
   debugPrint('MyApp/${buildMessage()}');
 }
 
+const int kMaxItems = 10;
+const int kMinItems = 3;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -107,8 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
       availableNumbers.add(q);
     }
 
-    const int kMaxItems = 10;
-    const int kMinItems = 3;
     final int itemsNumber =
         Random.secure().nextInt(kMaxItems - kMinItems) + kMinItems;
 

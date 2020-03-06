@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void _log(String Function() buildMessage) {
-//  debugPrint('ShowAnimated/${buildMessage()}');
+  debugPrint('ShowAnimated/${buildMessage()}');
 }
 
 typedef CustomAnimation = Widget Function({

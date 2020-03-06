@@ -23,15 +23,6 @@ class _HorizontalAnimatedListWidgetState
   final AddDeleteLogic addDelete = AddDeleteLogic();
 
   @override
-  void initState() {
-    super.initState();
-
-    for (int index = 0; index < 10; ++index) {
-      widget.items.add(Item(addDelete.getNextNumber()));
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     _widgets = widget.items
         .map((Item item) => OneItemWidget(
