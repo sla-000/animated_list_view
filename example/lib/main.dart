@@ -5,6 +5,10 @@ import 'package:example/item.dart';
 import 'package:example/vertical_list.dart';
 import 'package:flutter/material.dart';
 
+void _log(String Function() buildMessage) {
+  debugPrint('MyApp/${buildMessage()}');
+}
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -29,12 +33,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Item> _verticalItems;
+  List<Item> _horizontalItems;
 
   @override
   void initState() {
     super.initState();
 
     _verticalItems = _getRandomItems();
+    _horizontalItems = _getRandomItems();
   }
 
   @override
@@ -51,8 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Container(
                 height: 250,
-                child: const Scrollbar(
-                  child: HorizontalAnimatedListWidget(),
+                child: Scrollbar(
+                  child: HorizontalAnimatedListWidget(items: _horizontalItems),
                 ),
               ),
               Container(
@@ -71,7 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
             left: 20,
             child: FloatingActionButton(
               child: const Icon(Icons.refresh),
-              onPressed: () {},
+              onPressed: () {
+                _horizontalItems = _getRandomItems();
+                setState(() {});
+              },
             ),
           ),
           Positioned(
@@ -110,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       rez.add(Item(val));
     }
+
+    _log(() => '_getRandomItems: rez=$rez');
 
     return rez;
   }

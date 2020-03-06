@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 class HorizontalAnimatedListWidget extends StatefulWidget {
   const HorizontalAnimatedListWidget({
     Key key,
+    @required this.items,
   }) : super(key: key);
+
+  final List<Item> items;
 
   @override
   _HorizontalAnimatedListWidgetState createState() =>
@@ -16,7 +19,6 @@ class HorizontalAnimatedListWidget extends StatefulWidget {
 
 class _HorizontalAnimatedListWidgetState
     extends State<HorizontalAnimatedListWidget> {
-  final List<Item> _items = <Item>[];
   List<Widget> _widgets;
   final AddDeleteLogic addDelete = AddDeleteLogic();
 
@@ -25,28 +27,28 @@ class _HorizontalAnimatedListWidgetState
     super.initState();
 
     for (int index = 0; index < 10; ++index) {
-      _items.add(Item(addDelete.getNextNumber()));
+      widget.items.add(Item(addDelete.getNextNumber()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _widgets = _items
+    _widgets = widget.items
         .map((Item item) => OneItemWidget(
               key: ValueKey<int>(item.number),
               number: item.number,
               color: item.color,
               vertical: false,
               onDelete: () {
-                addDelete.delete(_items, item.number);
+                addDelete.delete(widget.items, item.number);
                 setState(() {});
               },
               onAddAfter: () {
-                addDelete.addAfter(_items, item.number);
+                addDelete.addAfter(widget.items, item.number);
                 setState(() {});
               },
               onAddBefore: () {
-                addDelete.addBefore(_items, item.number);
+                addDelete.addBefore(widget.items, item.number);
                 setState(() {});
               },
             ))
