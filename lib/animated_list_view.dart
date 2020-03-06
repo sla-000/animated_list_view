@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
-void _log(String message) {
-  debugPrint('AnimatedListView/$message');
+void _log(String Function() buildMessage) {
+//  debugPrint('AnimatedListView/${buildMessage()}');
 }
 
 class AnimatedListView extends StatefulWidget {
@@ -67,9 +67,9 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
 
-    _log('initState: children=${widget.children.map((Widget widget) {
-      return widget.key;
-    }).toList(growable: false)}');
+    _log(() => 'initState: children=${widget.children.map((Widget widget) {
+          return widget.key;
+        }).toList(growable: false)}');
 
     _currentChildren = widget.children;
     _animatedChildren = _warpToAnimation(_currentChildren);
@@ -98,13 +98,13 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   @override
   void didUpdateWidget(AnimatedListView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _log('didUpdateWidget: '
+    _log(() => 'didUpdateWidget: '
         'was=${_currentChildren.map((Widget widget) {
-      return widget.key;
-    }).toList(growable: false)}, '
+          return widget.key;
+        }).toList(growable: false)}, '
         'new=${widget.children.map((Widget widget) {
-      return widget.key;
-    }).toList(growable: false)}');
+          return widget.key;
+        }).toList(growable: false)}');
 
     final List<Key> _lastChildrenKeys =
         _currentChildren.map((Widget child) => child.key).toList();
@@ -129,11 +129,11 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     });
 
     if (_keysToAdd.isNotEmpty) {
-      _log('didUpdateWidget: _keysToAdd=$_keysToAdd');
+      _log(() => 'didUpdateWidget: _keysToAdd=$_keysToAdd');
     }
 
     if (_keysToRemove.isNotEmpty) {
-      _log('didUpdateWidget: _keysToRemove=$_keysToRemove');
+      _log(() => 'didUpdateWidget: _keysToRemove=$_keysToRemove');
     }
 
     final List<Widget> _widgetsToRemove = <Widget>[];
@@ -148,10 +148,10 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     );
     _animatedChildren = _warpToAnimation(_currentChildren);
 
-    _log(
+    _log(() =>
         'didUpdateWidget: New _currentChildren=${_currentChildren.map((Widget widget) {
-      return widget.key;
-    }).toList(growable: false)}');
+          return widget.key;
+        }).toList(growable: false)}');
   }
 
   @override
@@ -190,7 +190,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
           _currentChildren.remove(child);
           _keysToRemove.remove(child.key);
           _animatedChildren = _warpToAnimation(_currentChildren);
-          _log('_buildAnimated: Removed child=${child.key}');
+          _log(() => '_buildAnimated: Removed child=${child.key}');
           setState(() {});
         },
         child: child,
@@ -204,7 +204,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         onAnimationComplete: () {
           _keysToAdd.remove(child.key);
           _animatedChildren = _warpToAnimation(_currentChildren);
-          _log('_buildAnimated: Added child=${child.key}');
+          _log(() => '_buildAnimated: Added child=${child.key}');
           setState(() {});
         },
         child: child,

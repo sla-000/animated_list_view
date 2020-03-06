@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-void _log(String message) {
-  debugPrint('ShowAnimated/$message');
+void _log(String Function() buildMessage) {
+//  debugPrint('ShowAnimated/${buildMessage()}');
 }
 
 typedef CustomAnimation = Widget Function({
@@ -39,7 +39,7 @@ class _ShowAnimatedState extends State<ShowAnimated>
   @override
   void initState() {
     super.initState();
-    _log('initState: key=${widget.child.key}');
+    _log(() => 'initState: key=${widget.child.key}');
 
     _animationController =
         AnimationController(vsync: this, duration: widget._duration);
@@ -59,7 +59,7 @@ class _ShowAnimatedState extends State<ShowAnimated>
   @override
   void didUpdateWidget(ShowAnimated oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _log(
+    _log(() =>
         'didUpdateWidget: key=${widget.child.key}, appearing=${widget.appearing}');
 
     _startAnimation();
