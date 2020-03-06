@@ -1,25 +1,34 @@
-import 'dart:math';
+import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 class Item {
-  Item(this.number) : this.color = _getRandomColor();
+  Item(this.number) : color = _getColor(number);
 
   final int number;
   final Color color;
 
-  static Color _getRandomColor() {
+  static Color _getColor(int number) {
+    final Digest digest = md5.convert(utf8.encode('1234567-$number'));
+
     return Color.fromARGB(
       0xFF,
-      _getRandomInt(),
-      _getRandomInt(),
-      _getRandomInt(),
+      _convertInt(digest.bytes[0]),
+      _convertInt(digest.bytes[1]),
+      _convertInt(digest.bytes[2]),
     );
   }
 
-  static int _getRandomInt() {
-    const delta = 200;
-    return Random.secure().nextInt(delta) + 255 - delta;
+  static int _convertInt(int val) {
+    const int delta = 170;
+
+    return (val * delta / 255.0).floor() + (255 - delta);
+  }
+
+  @override
+  String toString() {
+    return 'Item{$number}';
   }
 
   @override
