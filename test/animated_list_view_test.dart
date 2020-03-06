@@ -462,7 +462,7 @@ void main() {
         expect(rez, <int>[1, 2]);
       });
 
-      test('test3', () {
+      test('test-4b3fewfesdvcw', () {
         final List<int> x = <int>[1, 2, 3, 4];
         final List<int> y = <int>[2, 3, 4];
 
@@ -500,7 +500,7 @@ void main() {
         expect(rez, <int>[1, 2, 3]);
       });
 
-      test('test2', () {
+      test('test-ht4g2dcf223btgr', () {
         final List<int> x = <int>[1, 2, 3, 4];
         final List<int> y = <int>[2, 4];
 
@@ -538,13 +538,22 @@ void main() {
     });
 
     group('Test mergeChanges function all', () {
-      test('test1', () {
+      test('test-j6g3g4f3grfd2e31', () {
         final List<int> x = <int>[1, 2, 3, 4, 5, 6, 7, 8];
         final List<int> y = <int>[2, 9, 10, 3, 4, 6, 11, 12];
 
         final List<int> rez = mergeChanges(x, y);
 
-        expect(rez, <int>[1, 2, 9, 10, 3, 4, 5, 6, 7, 11, 12, 8]);
+        expect(rez, <int>[1, 2, 9, 10, 3, 4, 5, 6, 11, 12, 7, 8]);
+      });
+
+      test('test-n5644g334f2', () {
+        final List<int> x = <int>[5, 4, 2, 9];
+        final List<int> y = <int>[3, 8, 5, 4];
+
+        final List<int> rez = mergeChanges(x, y);
+
+        expect(rez, <int>[3, 8, 5, 4, 2, 9]);
       });
     });
   });

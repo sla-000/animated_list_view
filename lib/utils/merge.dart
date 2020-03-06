@@ -1,9 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
-void _log(String message) {
-  debugPrint('merge/$message');
+void _log(String Function() buildMessage) {
+//  debugPrint('merge/${buildMessage()}');
 }
 
 const int kIndexNotFound = -1;
@@ -37,15 +35,14 @@ List<T> mergeChanges<T>(
 
   final List<T> rez = List<T>.of(listNew);
 
-  int indexLastNotRemovingItem = kIndexNotFound;
   bool collectingListOfRemovingItems = true;
   List<T> collectionOfRemovingItems = <T>[];
 
-  _log('listOld=$listOld');
-  _log('toRemove=$toRemove');
+  _log(() => 'listOld=$listOld');
+  _log(() => 'toRemove=$toRemove');
 
   for (int q = 0; q < listOld.length; ++q) {
-    _log('q=$q');
+    _log(() => 'q=$q');
     final T valListOld = listOld[q];
 
     if (toRemove.contains(valListOld)) {
@@ -53,38 +50,33 @@ List<T> mergeChanges<T>(
         collectingListOfRemovingItems = true;
 
         collectionOfRemovingItems = <T>[];
-        _log('init collectionOfRemovingItems');
+        _log(() => 'init collectionOfRemovingItems');
       }
 
       collectionOfRemovingItems.add(valListOld);
-      _log('collectionOfRemovingItems add=$valListOld');
+      _log(() => 'collectionOfRemovingItems add=$valListOld');
     } else {
-      indexLastNotRemovingItem = q;
-      _log('indexLastNotRemovingItem=$q');
-
       if (collectingListOfRemovingItems == true) {
         collectingListOfRemovingItems = false;
 
-        int insertIndex;
-
-        if (indexLastNotRemovingItem == kIndexNotFound) {
-          insertIndex = 0;
-        } else {
-          insertIndex = min(rez.length - 1, indexLastNotRemovingItem + 1);
-        }
+        final int insertIndex = rez
+            .indexWhere((T valInListNew) => isEqual(valInListNew, valListOld));
 
         rez.insertAll(insertIndex, collectionOfRemovingItems);
-        _log('insert collectionOfRemovingItems=$collectionOfRemovingItems');
-        _log('insert rez=$rez');
+        _log(() =>
+            'insert collectionOfRemovingItems=$collectionOfRemovingItems');
+        _log(() => 'insert rez=$rez');
 
         collectionOfRemovingItems = <T>[];
       }
     }
   }
 
-  rez.addAll(collectionOfRemovingItems);
-  _log('addAll collectionOfRemovingItems=$collectionOfRemovingItems');
-  _log('insert rez=$rez');
+  if (collectingListOfRemovingItems == true) {
+    rez.addAll(collectionOfRemovingItems);
+    _log(() =>
+        'final addAll collectionOfRemovingItems=$collectionOfRemovingItems');
+  }
 
   return rez;
 }
