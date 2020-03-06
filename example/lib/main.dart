@@ -110,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
       availableNumbers.add(q);
     }
 
-    final int itemsNumber =
-        Random.secure().nextInt(kMaxItems - kMinItems) + kMinItems;
+    final int itemsNumber = 5;
+//        Random.secure().nextInt(kMaxItems - kMinItems) + kMinItems;
 
     for (int index = 0; index < itemsNumber; ++index) {
       final int index = Random.secure().nextInt(availableNumbers.length);

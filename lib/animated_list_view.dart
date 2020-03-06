@@ -126,12 +126,20 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       }
     }
 
+    if (_keysToRemove.isNotEmpty) {
+      _log(() => 'didUpdateWidget: _keysToRemove=$_keysToRemove');
+    }
+
     for (int q = 0; q < _widgetsToAdd.length; ++q) {
       final Key key = _widgetsToAdd[q].key;
 
       if (!_keysToAdd.contains(key)) {
         _keysToAdd.add(key);
       }
+    }
+
+    if (_keysToAdd.isNotEmpty) {
+      _log(() => 'didUpdateWidget: _keysToAdd=$_keysToAdd');
     }
 
     _log(() =>
